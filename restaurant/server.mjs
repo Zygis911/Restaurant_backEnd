@@ -1,35 +1,36 @@
 import express from "express";
 
-import users from "./db/users.json" assert {type: "json"}
-import menus from "./db/menus.json" assert {type: "json"}
-import orders from "./db/orders.json" assert {type: "json"}
+import usersRouter from "./routes/index.mjs";
 
-import fs from "fs"
-import path, {dirname} from "url"
+import fs from "fs";
+
+import path, {dirname} from "path";
+
 import { fileURLToPath } from "url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
+
 const router = express.Router();
-
-router.get('/users', (req, res) => {
-    try {
-        res.status(200).json(users)
-    } catch (error) {
-        res.status(500).json({message: "An error occured while retrieving users"})
-    }
-})
-
-
 
 const app = express();
 
-const port = 3000;
+const requestTime = function(req, res, next) {
+    req.requestTime = Date.now();
+    next();
+}
+
+app.get('/next', (req, res) => {res.send("hello world")})
 
 app.use(express.json());
-app.get('/', (req, res) => {
-    res.send('Hello world')
-});
 
-app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`)
+app.use("/api/v1/library", requestTime, usersRouter);
+
+// server indentifikavimas
+
+const PORT = 3000;
+
+// aplikacijos paleidimas
+
+app.listen(PORT, () =>{
+    console.log("server is listening on port 3000")
 });
