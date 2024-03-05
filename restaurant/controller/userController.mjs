@@ -61,6 +61,7 @@ const userController = {
     }
   },
 
+
   getUserById: (req, res) => {
     try {
       const id = parseInt(req.params.id);
@@ -101,9 +102,72 @@ const userController = {
       }
     } catch (error) {
       console.log(error);
-      res.status(500).json({message: "an error has occured"})
+      res.status(500).json({ message: "an error has occured" });
     }
   },
+
+  updateUserFields: async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const updatedFields = req.body;
+      const updateUser = { ...req.body, id };
+
+      let userIndex = users.findIndex((user) => user.id === id);
+      if (userIndex === -1) {
+        res.status(404).json({ message: "user not found" });
+        return;
+      }
+
+      users[userIndex] = { ...users[userIndex], ...updatedFields };
+
+      await fs.promises.writeFile(
+        path.join(__dirname, "../db/users.json"),
+        JSON.stringify(users, null, 2)
+      );
+      res.status(200).json(updateUser);
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: "an error has occured " });
+    }
+  },
+
+  deleteUser: async (res, req) => {
+    try {
+      const id = parseInt(req.params.id);
+      let userIndex = users.findIndex((user) => user.id === id);
+      if (userIndex === -1) {
+        res.status(404).json({ message: "user not found" });
+        return;
+      }
+
+      users.splice(userIndex, 1);
+      await fs.promises.writeFile(
+        path.join(__dirname, "../db/users.json"),
+        JSON.stringify(users, null, 2)
+      );
+      res.status(204).json({message: "user succesfully deleted"});
+
+    } catch (error) {
+      res.status(500).json({message: "an error occured deleting"})
+    }
+  },
+
+  getUserOrders: (res, req) => {
+
+  },
+
+  createOrder: async (res, req) => {
+
+  },
+
+  cancelReservation: async (res, req) => {
+
+  },
+  readMenuItem: (res, req) => {
+
+
+  },
+
 };
 
 export default userController;
