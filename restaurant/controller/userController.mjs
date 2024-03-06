@@ -2,7 +2,7 @@ import users from "../db/users.json" assert { type: "json" };
 import menus from "../db/menus.json" assert { type: "json" };
 import orders from "../db/orders.json" assert { type: "json" };
 
-import fs from "fs";
+import fs, { writeFile } from "fs";
 
 import path, { dirname } from "path";
 
@@ -197,37 +197,50 @@ const userController = {
         res.status(404).json({ message: "menu item not found" });
       }
     } catch (error) {
-      res
-        .status(500)
-        .json({
-          message: "an error has occured while retrieving menu items by id",
-        });
+      res.status(500).json({
+        message: "an error has occured while retrieving menu items by id",
+      });
     }
   },
 
   updateMenuItem: async (res, req) => {
-
     try {
       const id = parseInt(req.params.id);
+      const updateMenuItem = { ...req.body, id };
 
-      const updateMenuItem = {...req.body, id};
-  
       let menuIndex = menus.findIndex((menu) => menu.id === id);
       if (menuIndex === -1) {
-  res.
-  status(404).json({message: " menu item not found"})
+        res.status(404).json({ message: "menu item not found" });
+        return;
+      }
 
+      menus[menuIndex] = updateMenuItem;
 
-  
+      res.status(200).json(updateMenuItem);
+      await fs.promises.writeFile(
+        path.join(__dirname, "../db/menus.json"),
+        JSON.stringify(menus, null, 2)
+      );
     } catch (error) {
-      
+      console.log(error);
+      res.status(500).json({ message: " ann error has occured" });
     }
-    
-    }
+  },
 
-
-
-  }
+  deleteMenuItem: async (res, req) => {
+    try {
+      const id = parseInt(req.params.id);
+      let menuIndex = menus.findIndex((menu) => menu.id === id);
+      if (menuIndex === -1) {
+        res.status(404).json({ message: "menu item not found" });
+        return;
+      }
+      menus.splice(menuIndex, 1);
+      await fs.promises.writeFile(path.join(__dirname, "../db/menus.json"),
+      JSON.stringify(menus, null, 2))
+      res.status(204).json({message: "menu item succesfulyl deleted"})
+    } catch (error) {res.status(500).json({message: "an error occured deleting"})}
+  },
 };
 
 export default userController;
