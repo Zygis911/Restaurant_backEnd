@@ -7,9 +7,9 @@
     "phone number": "112",
     "address": "Rokiskio 12",
     "orders": [
-      {
+    [  {
         "orderId": ""
-      }
+      }]
     ]
   },
   {
@@ -60,5 +60,12 @@
     "registered_on": "2024-03-06",
     "reservation": [],
     "id": 6
+  },
+  {
+    "username": "Testukas",
+    "email": "hahah@gmail.com",
+    "registered_on": "2024-03-06",
+    "reservation": [],
+    "id": 7
   }
 ]

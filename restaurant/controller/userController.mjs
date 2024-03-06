@@ -131,7 +131,7 @@ const userController = {
     }
   },
 
-  deleteUser: async (res, req) => {
+  deleteUser: async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       let userIndex = users.findIndex((user) => user.id === id);
@@ -152,15 +152,16 @@ const userController = {
   },
 
   // MENU service
-  getMenuItems: (res, req) => {
+  getMenuItems: (req, res) => {
     try {
       res.status(200).json(menus); // pasiteirauti, users paemimo budas neveikia
+
     } catch (error) {
       res.status(500).json({ message: "failed to retrieve menu items" });
     }
   },
 
-  createMenuItem: async (res, req) => {
+  createMenuItem: async (req, res) => {
     try {
       // irgi nesigauna bbz
       const newMenuItem = {
@@ -188,7 +189,7 @@ const userController = {
     }
   },
 
-  readMenuItemById: (res, req) => {
+  readMenuItemById: (req, res) => {
     try {
       const id = parseInt(req.params.id);
       const menu = menu.find((menu) => menu.id === id);
@@ -203,7 +204,7 @@ const userController = {
     }
   },
 
-  updateMenuItem: async (res, req) => {
+  updateMenuItem: async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       const updateMenuItem = { ...req.body, id };
@@ -236,10 +237,73 @@ const userController = {
         return;
       }
       menus.splice(menuIndex, 1);
-      await fs.promises.writeFile(path.join(__dirname, "../db/menus.json"),
-      JSON.stringify(menus, null, 2))
-      res.status(204).json({message: "menu item succesfulyl deleted"})
-    } catch (error) {res.status(500).json({message: "an error occured deleting"})}
+      await fs.promises.writeFile(
+        path.join(__dirname, "../db/menus.json"),
+        JSON.stringify(menus, null, 2)
+      );
+      res.status(204).json({ message: "menu item succesfulyl deleted" });
+    } catch (error) {
+      res.status(500).json({ message: "an error occured deleting" });
+    }
+  },
+
+  createOrderUser: async (req, res) => {
+    try {
+      const userId = Number(req.params.userId);
+      const menuItemId = Number(req.query.menuItemId);
+      const quantity = Number(req.query.quantity);
+
+      const user = users.find((user) => user.id === id);
+
+      if (!user) {
+        res.status(404).json({ message: "user not found" });
+        return;
+      }
+
+      let maxOrderId;
+      if (orders.length > 0) {
+        maxOrderId = Math.max(...orders.map((order) => order.id));
+      } else {
+        maxOrderId = 0;
+      }
+
+      const orderToSave = {
+        id: orders.length + 1, // naujo orderio id sukurimas
+        customerId: userId,
+        Items: [],
+      };
+
+      const menuItem = menus.find((menu) => menu.id === menuItemId);
+      if (!menuItem) {
+        res
+          .status(400)
+          .json({ message: "menu item with id you written does not exist " });
+        return;
+      }
+
+      orderToSave.Items.push({
+        menuItemId: menuItemId,
+        quantity: quantity,
+      });
+
+      orders.push(orderToSave)
+
+      user.order.push(orderToSave.id);
+
+      await fs.promises.writeFile(
+        path.join(__dirname, "../db/orders.json"),
+        JSON.stringify(orders, null, 2)
+      );
+      await fs.promises.writeFile(
+        path.join(__dirname, "../db/users.json"),
+        JSON.stringify(users, null, 2)
+      );
+
+      res.status(201).json(orderToSave)
+
+    } catch (error) {
+      res.status(500).json({message: "an error occured while creating an order"})
+    }
   },
 };
 
