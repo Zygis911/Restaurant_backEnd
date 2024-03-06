@@ -12,6 +12,7 @@ import { fileURLToPath } from "url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
+// USER service
 const userController = {
   getUsers: (req, res) => {
     try {
@@ -60,7 +61,6 @@ const userController = {
         .json({ message: "an error occured while creating users" });
     }
   },
-
 
   getUserById: (req, res) => {
     try {
@@ -145,29 +145,89 @@ const userController = {
         path.join(__dirname, "../db/users.json"),
         JSON.stringify(users, null, 2)
       );
-      res.status(204).json({message: "user succesfully deleted"});
-
+      res.status(204).json({ message: "user succesfully deleted" });
     } catch (error) {
-      res.status(500).json({message: "an error occured deleting"})
+      res.status(500).json({ message: "an error occured deleting" });
     }
   },
 
-  getUserOrders: (res, req) => {
-
+  // MENU service
+  getMenuItems: (res, req) => {
+    try {
+      res.status(200).json(menus); // pasiteirauti, users paemimo budas neveikia
+    } catch (error) {
+      res.status(500).json({ message: "failed to retrieve menu items" });
+    }
   },
 
-  createOrder: async (res, req) => {
+  createMenuItem: async (res, req) => {
+    try {
+      // irgi nesigauna bbz
+      const newMenuItem = {
+        ...req.body,
+        id: "",
+        name: "",
+        description: "",
+        price: "",
+        category: "",
+      };
+      menus.push(newMenuItem);
+      menus.forEach((menu, index) => {
+        menus.id = index + 1;
+      });
 
+      await fs.promises.writeFile(
+        path.join(__dirname, "../db/menus.json"),
+        JSON.stringify(menus, null, 2)
+      );
+    } catch (error) {
+      console.log(error);
+      res
+        .status(500)
+        .json({ message: "an error occured creating a menu item" });
+    }
   },
 
-  cancelReservation: async (res, req) => {
+  readMenuItemById: (res, req) => {
+    try {
+      const id = parseInt(req.params.id);
+      const menu = menu.find((menu) => menu.id === id);
 
+      if (!menu) {
+        res.status(404).json({ message: "menu item not found" });
+      }
+    } catch (error) {
+      res
+        .status(500)
+        .json({
+          message: "an error has occured while retrieving menu items by id",
+        });
+    }
   },
-  readMenuItem: (res, req) => {
+
+  updateMenuItem: async (res, req) => {
+
+    try {
+      const id = parseInt(req.params.id);
+
+      const updateMenuItem = {...req.body, id};
+  
+      let menuIndex = menus.findIndex((menu) => menu.id === id);
+      if (menuIndex === -1) {
+  res.
+  status(404).json({message: " menu item not found"})
 
 
-  },
+  
+    } catch (error) {
+      
+    }
+    
+    }
 
+
+
+  }
 };
 
 export default userController;

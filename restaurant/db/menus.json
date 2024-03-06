@@ -1,31 +1,30 @@
 [
-    {
-        "id" : "1",
-        "name": "A cheeseburger",
-        "description": "with pickle and lettuce and some cheese",
-        "price": "9.99",
-        "category": "main course"
-    },
-    {
-        "id" : "2",
-        "name": "French fries",
-        "description": "Crispy fries with salt",
-        "price": "5.00",
-        "category": "appetizer"
-    },
-    {
-        "id" : "3",
-        "name": "cake",
-        "description": "cake w chocolate",
-        "price": "3.99",
-        "category": "dessert"
-    },
-    {
-        "id" : "4",
-        "name": "sprite",
-        "description": "sparkling drink",
-        "price": "2.99",
-        "category": "drink"
-    }
-
+  {
+    "id": "1",
+    "name": "A cheeseburger",
+    "description": "with pickle and lettuce and some cheese",
+    "price": "9.99",
+    "category": "main course"
+  },
+  {
+    "id": "2",
+    "name": "French fries",
+    "description": "Crispy fries with salt",
+    "price": "5.00",
+    "category": "appetizer"
+  },
+  {
+    "id": "3",
+    "name": "cake",
+    "description": "cake w chocolate",
+    "price": "3.99",
+    "category": "dessert"
+  },
+  {
+    "id": "4",
+    "name": "sprite",
+    "description": "sparkling drink",
+    "price": "2.99",
+    "category": "drink"
+  }
 ]

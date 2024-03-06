@@ -1,55 +1,64 @@
 [
-    {
-        "id" : "1",
-        "name": "Zygis",
-        "email": "zygis@gmail.com",
-        "password": "zygintas",
-        "phone number": "112",
-        "address": "Rokiskio 12",
-        "orders": [
-            {
-                "orderId": ""
-            }
-        ]
-    },
-    {
-        "id" : "2",
-        "name": "Lukkas",
-        "email": "duurnius12@gmail.com",
-        "password": "durneliukas",
-        "phone number": "911",
-        "address": "Padangu 13",
-        "orders": [
-            {
-                "orderId": ""
-            }
-        ]
-    },
-    {
-        "id" : "3",
-        "name": "Grybasas",
-        "email": "auksokarys@gmail.com",
-        "password": "ccna",
-        "phone number": "112911",
-        "address": "ccna 12 g.",
-        "orders": [
-            {
-                "orderId": ""
-            }
-        ]
-    },
-    {
-        "id" : "4",
-        "name": "Droztukas",
-        "email": "pergeraiKariams@gmail.com",
-        "password": "drosiukarius",
-        "phone number": "261006",
-        "address": "drozyklos g. 12",
-        "orders": [
-            {
-                "orderId": ""
-            }
-        ]
-    }
-
+  {
+    "id": 1,
+    "name": "Zygis",
+    "email": "zygis@gmail.com",
+    "password": "zygintas",
+    "phone number": "112",
+    "address": "Rokiskio 12",
+    "orders": [
+      {
+        "orderId": ""
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Lukkas",
+    "email": "duurnius12@gmail.com",
+    "password": "durneliukas",
+    "phone number": "911",
+    "address": "Padangu 13",
+    "orders": [
+      {
+        "orderId": ""
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Grybasas",
+    "email": "auksokarys@gmail.com",
+    "password": "ccna",
+    "phone number": "112911",
+    "address": "ccna 12 g.",
+    "orders": [
+      {
+        "orderId": ""
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "name": "Droztukas",
+    "email": "pergeraiKariams@gmail.com",
+    "password": "drosiukarius",
+    "phone number": "261006",
+    "address": "drozyklos g. 12",
+    "orders": [
+      {
+        "orderId": ""
+      }
+    ]
+  },
+  {
+    "registered_on": "2024-03-06",
+    "reservation": [],
+    "id": 5
+  },
+  {
+    "registered_on": "2024-03-06",
+    "reservation": [],
+    "id": 6
+  }
 ]
