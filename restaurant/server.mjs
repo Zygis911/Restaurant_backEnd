@@ -4,6 +4,8 @@ import session from "./middleware/session.mjs";
 
 import usersRouter from "./routes/index.mjs";
 
+import cookies from './middleware/cookies.mjs'
+
 import fs from "fs";
 
 import path, { dirname } from "path";
@@ -17,6 +19,7 @@ const router = express.Router();
 const app = express();
 
 app.use(session);
+app.use(cookies);
 
 const requestTime = function (req, res, next) {
   req.requestTime = Date.now();
