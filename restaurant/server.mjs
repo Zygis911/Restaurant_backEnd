@@ -1,25 +1,31 @@
 import express from "express";
 
+import session from "./middleware/session.mjs";
+
 import usersRouter from "./routes/index.mjs";
 
 import fs from "fs";
 
-import path, {dirname} from "path";
+import path, { dirname } from "path";
 
 import { fileURLToPath } from "url";
 
-const __dirname = dirname(fileURLToPath(import.meta.url))
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const router = express.Router();
 
 const app = express();
 
-const requestTime = function(req, res, next) {
-    req.requestTime = Date.now();
-    next();
-}
+app.use(session);
 
-app.get('/next', (req, res) => {res.send("hello world")})
+const requestTime = function (req, res, next) {
+  req.requestTime = Date.now();
+  next();
+};
+
+app.get("/next", (req, res) => {
+  res.send("hello world");
+});
 
 app.use(express.json());
 
@@ -31,6 +37,6 @@ const PORT = 3000;
 
 // aplikacijos paleidimas
 
-app.listen(PORT, () =>{
-    console.log("server is listening on port 3000")
+app.listen(PORT, () => {
+  console.log("server is listening on port 3000");
 });

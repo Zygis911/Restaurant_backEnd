@@ -62,6 +62,55 @@ const userController = {
     }
   },
 
+  login: async (req, res) => {
+    try {
+      const { name, password, email } = req.body;
+
+      const user = users.find(
+        (user) => user.name === name || user.email === email
+      );
+
+      if (!user) {
+        res.status(404).json({ message: "user not found" });
+        return;
+      }
+
+      if (user.password !== password) {
+        res.status(401).json({ message: "Invalid" });
+        return;
+      }
+
+      req.session.userId = user.id;
+      res.status(200).json({ message: "user logged in successfully" });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: " logging in error" });
+    }
+  },
+
+  logout: (req, res) => {
+    try {
+      if (!req.session.userId) {
+        res.status(400).json({ message: "no active session" });
+        return;
+      }
+
+      req.session.destroy((err) => {
+        if (err) {
+          res
+            .status(500)
+            .json({ message: "an error occured while logging out" });
+          return;
+        }
+      });
+
+      res.status(200).json({ message: "Logged out successfully" });
+    } catch (error) {
+      res.status(500).json({ message: "an error occured while destroying out" });
+      return;
+    }
+  },
+
   getUserById: (req, res) => {
     try {
       const id = parseInt(req.params.id);
@@ -155,7 +204,6 @@ const userController = {
   getMenuItems: (req, res) => {
     try {
       res.status(200).json(menus); // pasiteirauti, users paemimo budas neveikia
-
     } catch (error) {
       res.status(500).json({ message: "failed to retrieve menu items" });
     }
@@ -286,7 +334,7 @@ const userController = {
         quantity: quantity,
       });
 
-      orders.push(orderToSave)
+      orders.push(orderToSave);
 
       user.order.push(orderToSave.id);
 
@@ -299,10 +347,11 @@ const userController = {
         JSON.stringify(users, null, 2)
       );
 
-      res.status(201).json(orderToSave)
-
+      res.status(201).json(orderToSave);
     } catch (error) {
-      res.status(500).json({message: "an error occured while creating an order"})
+      res
+        .status(500)
+        .json({ message: "an error occured while creating an order" });
     }
   },
 };
