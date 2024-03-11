@@ -1,8 +1,18 @@
-import express from 'express'
+import express from "express";
 const router = express.Router();
 
-import userController from '../controller/userController.mjs';
+import userController from "../controller/userController.mjs";
 
-router.get("/", userController.getMenuItems);
+import menuController from "../controller/menuController.mjs";
 
-export default router
+router.get("/", menuController.getMenuItems);
+
+router.get("/:id", menuController.readMenuItemById);
+
+router.post("/register", menuController.createMenuItem);
+
+router.delete("/:id", menuController.deleteMenuItem);
+
+router.put("/:id", menuController.updateMenuItem);
+
+export default router;

@@ -115,7 +115,7 @@ const userController = {
     try {
       const id = parseInt(req.params.id);
 
-      const user = user.find((user) => user.id === id);
+      const user = users.find((user) => user.id === id);
 
       if (!user) {
         res.status(404).json({ message: "user not found" }); // by default kur id naudojam , naudoti sita eilute
@@ -135,7 +135,7 @@ const userController = {
       if (userId === -1) {
         res.status(404).json({ message: "user not found" });
         return;
-
+      }
         //reikia issaugoti sukurimo datos ir vartotojo rezervacijos
 
         updateUser.registered_on = users[userIndex].registered_on;
@@ -148,7 +148,7 @@ const userController = {
           path.join(__dirname, "../db/users.json"),
           JSON.stringify(users, null, 2)
         );
-      }
+
     } catch (error) {
       console.log(error);
       res.status(500).json({ message: "an error has occured" });
@@ -201,13 +201,6 @@ const userController = {
   },
 
   // MENU service
-  getMenuItems: (req, res) => {
-    try {
-      res.status(200).json(menus); // pasiteirauti, users paemimo budas neveikia
-    } catch (error) {
-      res.status(500).json({ message: "failed to retrieve menu items" });
-    }
-  },
 
   createMenuItem: async (req, res) => {
     try {
@@ -237,20 +230,7 @@ const userController = {
     }
   },
 
-  readMenuItemById: (req, res) => {
-    try {
-      const id = parseInt(req.params.id);
-      const menu = menu.find((menu) => menu.id === id);
 
-      if (!menu) {
-        res.status(404).json({ message: "menu item not found" });
-      }
-    } catch (error) {
-      res.status(500).json({
-        message: "an error has occured while retrieving menu items by id",
-      });
-    }
-  },
 
   updateMenuItem: async (req, res) => {
     try {

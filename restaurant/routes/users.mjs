@@ -23,18 +23,7 @@ router.get("/:id", validate(validateUserId, userValidationSchema), userControlle
 
 router.put("/:id", validate(validateUserId, userValidationSchema), userController.updateUser);
 
-router.delete("/", userController.deleteUser);
-
-// menus
-
-
-
-// router.post("/", userController.createMenuItem);
-
-// router.get("/", userController.readMenuItemById);
-
-
-// orders
+router.delete("/:id", userController.deleteUser);
 
 
 export default router;
