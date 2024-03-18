@@ -24,5 +24,7 @@ router.get("/", userController.getUsers);
 
 // router.delete("/:id", userController.deleteUser);
 
+router.post('/:userId/reservations/:bookId', userController.createReservation);
+
 
 export default router;

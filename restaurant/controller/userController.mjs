@@ -1,13 +1,15 @@
 import userModel from "../model/userModel.mjs";
 
-
 const userController = {
   getUsers: async (req, res) => {
     try {
+      const users = await userModel.getUsers(
+        req.query.paginate,
+        req.query.page,
+        req.query.limit
+      );
 
-      const users = await userModel.getUsers(req.query.paginate, req.query.page, req.query.limit)
-
-    res.status(200).json(users)
+      res.status(200).json(users);
     } catch (error) {
       res
         .status(500)
@@ -85,7 +87,9 @@ const userController = {
 
       res.status(200).json({ message: "Logged out successfully" });
     } catch (error) {
-      res.status(500).json({ message: "an error occured while destroying out" });
+      res
+        .status(500)
+        .json({ message: "an error occured while destroying out" });
       return;
     }
   },
@@ -115,19 +119,18 @@ const userController = {
         res.status(404).json({ message: "user not found" });
         return;
       }
-        //reikia issaugoti sukurimo datos ir vartotojo rezervacijos
+      //reikia issaugoti sukurimo datos ir vartotojo rezervacijos
 
-        updateUser.registered_on = users[userIndex].registered_on;
-        updateUser.reservation = users[userIndex].reservation;
+      updateUser.registered_on = users[userIndex].registered_on;
+      updateUser.reservation = users[userIndex].reservation;
 
-        users[userIndex] = updateUser;
+      users[userIndex] = updateUser;
 
-        res.status(200).json(updateUser);
-        await fs.promises.writeFile(
-          path.join(__dirname, "../db/users.json"),
-          JSON.stringify(users, null, 2)
-        );
-
+      res.status(200).json(updateUser);
+      await fs.promises.writeFile(
+        path.join(__dirname, "../db/users.json"),
+        JSON.stringify(users, null, 2)
+      );
     } catch (error) {
       console.log(error);
       res.status(500).json({ message: "an error has occured" });
@@ -177,10 +180,18 @@ const userController = {
     } catch (error) {
       res.status(500).json({ message: "an error occured deleting" });
     }
-  }
+  },
+  createReservation: async (req, res) => {
+    try {
+      const { book } = await userModel.createReservation(req.params);
 
-
-
+      res.status(200).json({ message: "Book successfully reserved", book });
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: "an error occured while  creating a reservation" });
+    }
+  },
 };
 
 export default userController;
