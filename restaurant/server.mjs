@@ -1,45 +1,54 @@
 import express from "express";
-
-import session from "./middleware/session.mjs";
-
 import usersRouter from "./routes/index.mjs";
+import cookies from "./middleware/cookies.mjs";
+import { connectDB } from "./db/postgressConnection.mjs";
+import authorsRouter from './routes/index.mjs'
+import booksRouter from './routes/index.mjs'
+// const app = express();
 
-import cookies from './middleware/cookies.mjs'
+// const startServer = async () => {
+//   try {
+//     const message = await connectDB();
+//     console.log(message);
+//     app.use('api/v1/library', usersRouter)
 
-import fs from "fs";
+//     const PORT = 3000;
 
-import path, { dirname } from "path";
+//     app.use(express.json());
+//     app.use(cookies);
 
-import { fileURLToPath } from "url";
+//     app.listen(PORT, () => {
+//       console.log("server is listening on port 3000");
+//     });
+//   } catch (error) {}
+// };
 
-// const __dirname = dirname(fileURLToPath(import.meta.url));
+// startServer();
 
-// const router = express.Router();
 
+// Server registravimas
 const app = express();
 
-app.use(session);
-app.use(cookies);
+const startServer = async () => {
+    try {
+        const message = await connectDB()
+        console.log(message);
 
-const requestTime = function (req, res, next) {
-  req.requestTime = Date.now();
-  next();
-};
+       
 
-app.get("/next", (req, res) => {
-  res.send("hello world");
-});
+        const PORT = 3000
 
-app.use(express.json());
+        app.use(cookies)
+        app.use(express.json());
+        app.use('/api/v1/library', usersRouter, authorsRouter, booksRouter)
 
-app.use("/api/v1/library", requestTime, usersRouter);
+        app.listen(PORT, () => {
+            console.log('Server is listening on port 3000')
+        });
 
-// server indentifikavimas
+    } catch (error) {
+        console.error('Failed to connect to the server or database', error);
+    }
+}
 
-const PORT = 3000;
-
-// aplikacijos paleidimas
-
-app.listen(PORT, () => {
-  console.log("server is listening on port 3000");
-});
+startServer()
