@@ -4,6 +4,8 @@ import cookies from "./middleware/cookies.mjs";
 import { connectDB } from "./db/postgressConnection.mjs";
 import authorsRouter from './routes/index.mjs'
 import booksRouter from './routes/index.mjs'
+
+import passport from './strategeis/auth.mjs'
 // const app = express();
 
 // const startServer = async () => {
@@ -40,6 +42,8 @@ const startServer = async () => {
 
         app.use(cookies)
         app.use(express.json());
+
+        app.use(passport.initialize());
         app.use('/api/v1/library', usersRouter, authorsRouter, booksRouter)
 
         app.listen(PORT, () => {

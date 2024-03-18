@@ -18,6 +18,54 @@ const userModel = {
     }
   },
 
+  createUser: async (newUser) => {
+    try {
+      const {
+        username,
+        email,
+        password,
+        registered_on,
+        role = "user",
+      } = newUser;
+
+      const result = await pool.query(
+        "INSERT into users (username, email, password, registered_on, role) VALUES ($1, $2, $3, $4, $5) RETURNING *",
+        [username, email, password, registered_on, role]
+      );
+        console.log(result)
+        console.log(result.rows[0])
+      return result.rows[0];
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  },
+
+  login: async({username, email}) => {
+    const result = await pool.query('SELECT * FROM users WHERE username = $1 OR email = $2', [username, email]);
+
+    if (result.rows.length === 0) {
+      throw new Error('user not found')
+    }
+    const user = result.rows[0];
+    return user 
+  },
+
+  getUserByEmail: async({email}) => {
+    try {
+      const result = await pool.query('SELECT * FROM users WHERE email = $1', [email])
+      return result.rows[0]
+
+    } catch (error) {
+      console.error(error)
+      throw error;
+    }
+  },
+  getUserById: async(id) => { 
+    const result = await pool.query('SELECT * FROM users WHERE id = $1', [id]);
+    return result.rows[0]
+  },
+
   createReservation: async ({ userId, bookId }) => {
     const userResult = await pool.query("SELECT * FROM users WHERE id = $1", [
       userId,

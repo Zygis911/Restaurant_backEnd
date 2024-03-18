@@ -1,5 +1,7 @@
 import { checkSchema , param} from "express-validator";
 
+import userModel from "../model/userModel.mjs";
+
 export const userValidationSchema = checkSchema({
   username: {
     isLength: {
@@ -34,6 +36,14 @@ export const userValidationSchema = checkSchema({
     },
     notEmpty: {
       errorMessage: "email cannot be empty",
+    },
+    custom: {
+      options: async (value) => {
+        const existingUser = await userModel.getUserByEmail({email: value});
+        if(existingUser) {
+          throw new Error('email already taken.')
+        }
+      }
     },
   },
 });

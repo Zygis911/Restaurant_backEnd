@@ -1,5 +1,7 @@
 import userModel from "../model/userModel.mjs";
 
+import bcrypt from 'bcrypt'
+
 const userController = {
   getUsers: async (req, res) => {
     try {
@@ -19,24 +21,43 @@ const userController = {
 
   createUser: async (req, res) => {
     try {
-      const newUser = {
-        ...req.body,
-        registered_on: new Date().toISOString().split("T")[0],
-        reservation: [],
-      };
-      users.push(newUser);
-      users.forEach((user, index) => {
-        user.id = index + 1;
-      });
+      const {
+        username,
+        email,
+        password,
+        repeatPassword,
+        registered_on,
+        role = "user",
+      } = req.body;
 
-      await fs.promises.writeFile(
-        path.join(__dirname, "../db/users.json"),
-        JSON.stringify(users, null, 2)
-      );
+      const existingUser = await userModel.getUserByEmail(email);
 
-      res.status(201).json(newUser);
+      if (existingUser) {
+        res.status(400).json({ message: "Email already taken." });
+        return;
+      }
+
+      if (password !== repeatPassword) {
+        res.status(400).json({ message: "passwords do not match" });
+        return;
+      }
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+     const newUser = { 
+        username, 
+        email,
+        password: hashedPassword,
+        registered_on: new Date(),
+        reservations: [],
+        role
+      }
+
+      const createUser = await userModel.createUser(newUser);
+
+      res.status(201).json(createUser);
     } catch (error) {
-      console.log(error);
+
+      console.error(error);
       res
         .status(500)
         .json({ message: "an error occured while creating users" });
@@ -44,28 +65,17 @@ const userController = {
   },
 
   login: async (req, res) => {
-    try {
-      const { name, password, email } = req.body;
+    try { // del username
+      const { username, email } = req.body;
 
-      const user = users.find(
-        (user) => user.name === name || user.email === email
-      );
+     const user = await userModel.login({username, email});
 
-      if (!user) {
-        res.status(404).json({ message: "user not found" });
-        return;
-      }
 
-      if (user.password !== password) {
-        res.status(401).json({ message: "Invalid" });
-        return;
-      }
-
-      req.session.userId = user.id;
-      res.status(200).json({ message: "user logged in successfully" });
+      res.status(200).json({ message: "user logged in successfully", user });
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: " logging in error" });
+     if(error.username === 'User not found' || error.message === 'Invalid credentials') {
+      res.status(401).json({message: error.message})
+     }
     }
   },
 
