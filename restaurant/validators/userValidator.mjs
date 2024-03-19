@@ -1,4 +1,4 @@
-import { checkSchema , param} from "express-validator";
+import { checkSchema, param } from "express-validator";
 
 import userModel from "../model/userModel.mjs";
 
@@ -39,14 +39,38 @@ export const userValidationSchema = checkSchema({
     },
     custom: {
       options: async (value) => {
-        const existingUser = await userModel.getUserByEmail({email: value});
-        if(existingUser) {
-          throw new Error('email already taken.')
+        const existingUser = await userModel.getUserByEmail({ email: value });
+        if (existingUser) {
+          throw new Error("email already taken.");
         }
-      }
+      },
     },
   },
 });
+
+export const loginValidationSchema = [
+  checkSchema({
+    login: {
+      notEmpty: {
+        errorMessage: "email or username cannot be empty",
+      },
+      custom: {
+        options: (value) => {
+          return value.includes("@")
+            ? checkSchema({ email: { isEmail: true } })
+            : typeof value === "string";
+        },
+        errorMessage: "Login must be a valid email",
+      },
+    },
+    password: {
+      notEmpty: {
+        errorMessage: 'password cannot be empty'
+      }
+    }
+  }),
+];
+
 export const updateUserFieldsValidationSchema = checkSchema({
   username: {
     isLength: {
@@ -86,18 +110,11 @@ export const updateUserFieldsValidationSchema = checkSchema({
 });
 
 export const validateUserId = [
-  param("id")
-    .isInt()
-    .withMessage("ID must be an integer")
+  param("id").isInt().withMessage("ID must be an integer"),
 ];
-
 
 // rezervacijoms kitam git'e kodas!!
 export const validateReservationParams = [
-    param('userId')
-    .isInt()
-    .withMessage("user id must be an integer"),
-    param('bookId')
-    .isInt()
-    .withMessage("book id must be an integer"),
+  param("userId").isInt().withMessage("user id must be an integer"),
+  param("bookId").isInt().withMessage("book id must be an integer"),
 ];

@@ -4,13 +4,15 @@ import { validate } from "../middleware/schemaValidator.mjs";
 
 import userController from "../controller/userController.mjs";
 
-import {userValidationSchema, updateUserFieldsValidationSchema, validateUserId} from '../validators/userValidator.mjs'
+import {userValidationSchema, updateUserFieldsValidationSchema, validateUserId, loginValidationSchema} from '../validators/userValidator.mjs'
 
 import { validationResult } from "express-validator";
 
 import passport from '../strategeis/auth.mjs'
 
 import jwt from 'jsonwebtoken'
+
+import { isUser } from "../middleware/roleCheck.mjs";
 
 
 const router = express.Router();
@@ -22,9 +24,10 @@ router.post("/register", userValidationSchema, (req, res, next) => {
     if(!errors.isEmpty()) {
         return res.status(400).json({errors: errors.array()})
     }
+     next();
 }, userController.createUser);
 
-router.post('/login', passport.authenticate('local', {session: false}),  (req, res) => {
+router.post('/login', validate(loginValidationSchema), passport.authenticate('local', {session: false}),  (req, res) => {
     const token = jwt.sign({ id: req.user.id, role:  req.user.role }, 'secret', {expiresIn: '1h'} )
     res.status(200).json({message: "Logged", token})
 } ,   userController.login)
@@ -37,7 +40,7 @@ router.put("/:id", validate(validateUserId, userValidationSchema), userControlle
 
 router.delete("/:id", userController.deleteUser);
 
-router.post('/:userId/reservations/:bookId', userController.createReservation);
+router.post('/:userId/reservations/:bookId', passport.authenticate('jwt', { session: false }) , isUser, userController.createReservation);
 
 
 export default router;

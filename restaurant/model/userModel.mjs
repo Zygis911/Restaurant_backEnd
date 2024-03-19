@@ -29,7 +29,7 @@ const userModel = {
       } = newUser;
 
       const result = await pool.query(
-        "INSERT into users (username, email, password, registered_on, role) VALUES ($1, $2, $3, $4, $5) RETURNING *",
+        "INSERT INTO users (username, email, password, registered_on, role) VALUES ($1, $2, $3, $4, $5) RETURNING *",
         [username, email, password, registered_on, role]
       );
         console.log(result)
