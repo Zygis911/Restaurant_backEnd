@@ -6,6 +6,10 @@ import authorsRouter from './routes/index.mjs'
 import booksRouter from './routes/index.mjs'
 
 import passport from './strategeis/auth.mjs'
+import dotenv from 'dotenv'
+import cors from 'cors'
+ 
+dotenv.config();
 // const app = express();
 
 // const startServer = async () => {
@@ -30,6 +34,12 @@ import passport from './strategeis/auth.mjs'
 
 // Server registravimas
 const app = express();
+
+// const corsOption = {
+//     origin: 'http://localhost:5173/',
+// }
+ 
+app.use(cors())
 
 const startServer = async () => {
     try {

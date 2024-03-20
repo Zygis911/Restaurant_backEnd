@@ -12,12 +12,15 @@ import passport from '../strategeis/auth.mjs'
 
 import jwt from 'jsonwebtoken'
 
-import { isUser } from "../middleware/roleCheck.mjs";
+import { isUser, isAdmin } from "../middleware/roleCheck.mjs";
 
+import dotenv from 'dotenv'
+ 
+dotenv.config()
 
 const router = express.Router();
 
-router.get("/", userController.getUsers);
+router.get("/",  passport.authenticate('jwt', { session: false }), isAdmin , userController.getUsers);
 
 router.post("/register", userValidationSchema, (req, res, next) => {
     const errors = validationResult(req)
@@ -28,7 +31,7 @@ router.post("/register", userValidationSchema, (req, res, next) => {
 }, userController.createUser);
 
 router.post('/login', validate(loginValidationSchema), passport.authenticate('local', {session: false}),  (req, res) => {
-    const token = jwt.sign({ id: req.user.id, role:  req.user.role }, 'secret', {expiresIn: '1h'} )
+    const token = jwt.sign({ id: req.user.id, role:  req.user.role }, process.env.JWT_SECRET, {expiresIn: '1h'} )
     res.status(200).json({message: "Logged", token})
 } ,   userController.login)
 
@@ -40,7 +43,7 @@ router.put("/:id", validate(validateUserId, userValidationSchema), userControlle
 
 router.delete("/:id", userController.deleteUser);
 
-router.post('/:userId/reservations/:bookId', passport.authenticate('jwt', { session: false }) , isUser, userController.createReservation);
+router.post('/:userId/reservations/:bookId', passport.authenticate('jwt', { session: false }) , userController.createReservation);
 
 
 export default router;
